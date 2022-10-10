@@ -3,12 +3,14 @@
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-module.exports = {
+const Config = {
 
   development: {
-    client: 'sqlite3',
+    client: 'mysql',
     connection: {
-      filename: './dev.sqlite3'
+      database: 'democredit_db',
+      user:     'root',
+      password: ''
     }
   },
 
@@ -45,3 +47,5 @@ module.exports = {
   }
 
 };
+
+export default Config;
