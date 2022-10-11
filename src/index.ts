@@ -8,6 +8,7 @@ import { AuthencationDTO } from "./dto/response/authentication.dto";
 import { JWT } from "./security/jwt";
 import { RegisterDTO } from "./dto/request/register.dto";
 import { LoginDTO } from "./dto/request/login.dto";
+import { RefreshTokenDTO } from "./dto/request/refreshToken.dto";
 
 const app = express();
 app.use(express.json());
@@ -84,7 +85,7 @@ app.post("/login", async (req: express.Request, res: express.Response) => {
     });
   }
 
-  if (! await Password.isPasswordValid(body.password, user.password)) {
+  if (!(await Password.isPasswordValid(body.password, user.password))) {
     return res.status(400).send({ message: "invalid password" });
   }
 
@@ -103,6 +104,37 @@ app.post("/login", async (req: express.Request, res: express.Response) => {
   return res.status(200).send(authentication);
 });
 
+app.post(
+  "/token/refresh",
+  async (req: express.Request, res: express.Response) => {
+    const body: RefreshTokenDTO = req.body;
+
+    try {
+      //check if token is valid: throws error if not valid
+      JWT.isTokenValid(body.token);
+      //check if token is valid: throws error if not valid
+      await JWT.isRefreshTokenValid(
+        body.refreshToken,
+        JWT.getJwtId(body.token)
+      );
+    } catch (error) {
+      return res.status(401).send({
+        message: error.message,
+      });
+    }
+
+    const userDTO: UserDTO = JWT.getUser(body.token);
+    
+    const authentication: AuthencationDTO = {
+      token: JWT.generateToken(userDTO),
+      refreshToken: JWT.generateRefreshToken(userDTO.id),
+      user: userDTO,
+    };
+  
+    return res.status(200).send(authentication);
+  }
+);
+
 async function findUserByEmail(email: string) {
   const user = await knex("users")
     .where("email", email)
@@ -114,14 +146,14 @@ async function findUserByEmail(email: string) {
 }
 
 async function validate(body: object, form: string = "login") {
-  let schema: Joi.ObjectSchema
+  let schema: Joi.ObjectSchema;
   if (form == "login") {
     schema = Joi.object({
       email: Joi.string().required(),
       password: Joi.string().required(),
     });
   } else {
-     schema = Joi.object({
+    schema = Joi.object({
       name: Joi.string().min(3).max(30).required(),
       email: Joi.string().email({ minDomainSegments: 2 }).required(),
       password: Joi.string().required().min(3),

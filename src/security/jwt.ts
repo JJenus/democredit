@@ -24,16 +24,62 @@ export class JWT {
     jwtId: string = this.UUID
   ) {
     const id: string = uuidv4();
+    const expiresIn = moment().add(10, "days").toDate();
 
     const refreshToken = {
       id: id,
       user_id: userId,
       jwt_id: jwtId,
-      expires_in: moment().add(10, "d").toDate(),
+      expires_in: expiresIn,
     };
 
-    knex("refresh_tokens").insert(refreshToken);
+    knex("refresh_tokens").insert(refreshToken).then();
 
     return id;
+  }
+
+  public static isTokenValid(token: string) {
+    jwt.verify(token, this.SECRETE, { ignoreEpiration: false });
+  }
+
+  public static getUser(token: string) {
+    const decodedToken = jwt.decode(token);
+    const user = {
+      id: decodedToken.id,
+      name: decodedToken.name,
+      email: decodedToken.email,
+    };
+    return user;
+  }
+
+  public static getJwtId(token: string) {
+    const decodedToken = jwt.decode(token);
+    return decodedToken.jti;
+  }
+
+  public static async isRefreshTokenValid(
+    refreshTokenId: string,
+    jwtId: string
+  ) {
+    const refToken = await knex("refresh_tokens")
+      .where("id", refreshTokenId)
+      .then((tokens) => {
+        return tokens[0];
+      })
+      .catch((err) => null);
+    if (refToken && refToken["jwt_id"] == jwtId) {
+      if (moment().isAfter(refToken["expires_in"])) {
+        throw new Error("refresh token is expired");
+      }
+    } else {
+      throw new Error("token doesn't exist");
+    }
+
+    await knex("refresh_tokens")
+      .update({
+        used: true,
+      })
+      .where("id", refreshTokenId)
+      .then();
   }
 }
