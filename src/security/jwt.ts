@@ -42,9 +42,22 @@ export class JWT {
     jwt.verify(token, this.SECRETE, { ignoreEpiration: false });
   }
 
+  public static validateUser(user: UserDTO) {
+    const findUser = knex("user")
+    .where({
+      id: user.id,
+      email: user.email
+    }).then((users)=>{
+      return users[0];
+    }).catch(err=> null)
+
+    if(!findUser)
+      throw new Error("invalid user credentials");
+  }
+
   public static getUser(token: string) {
     const decodedToken = jwt.decode(token);
-    const user = {
+    const user: UserDTO = {
       id: decodedToken.id,
       name: decodedToken.name,
       email: decodedToken.email,
