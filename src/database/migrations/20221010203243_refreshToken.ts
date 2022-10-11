@@ -8,8 +8,11 @@ export async function up(knex: Knex): Promise<void> {
     table.boolean("used").defaultTo(false);
     table.boolean("invalidated").defaultTo(false);
     table.timestamp("expires_in").notNullable();
-    table.timestamps();
+    table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
+    table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
   });
 }
 
-export async function down(knex: Knex): Promise<void> {}
+export async function down(knex: Knex): Promise<void> {
+  return await knex.schema.dropTable("refresh_tokens");
+}

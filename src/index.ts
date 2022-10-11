@@ -1,18 +1,19 @@
 import * as express from "express";
+import { JWT } from "./security/jwt";
 import authController from "./controllers/auth.controller";
 import userController from "./controllers/users.controller";
-import { JWT } from "./security/jwt";
-
+import walletController from "./controllers/wallet.controller";
 
 const app = express();
 app.use(express.json());
 
 app.use("/users", requireLogin, userController);
+app.use("/wallets", requireLogin, walletController);
+
 app.use("/", authController)
 
 function requireLogin(req: express.Request, res: express.Response, next: express.NextFunction) {
   const authToken = req.headers.authorization;
-  console.log(authToken)
   if(!authToken){
     return res.status(401).send({message: "Authorization headers not found"})
   }
