@@ -37,4 +37,9 @@ users.get("/:id", (req: Request, res: Response) => {
     });
 });
 
+/** 
+ * TODO: from wallet
+ * 1. get user transfers
+ * 2. get user withdrawals
+*/
 export default users;
