@@ -38,21 +38,20 @@ export class JWT {
     return id;
   }
 
-  public static isTokenValid(token: string) {
-    jwt.verify(token, this.SECRETE, { ignoreEpiration: false });
+  public static isTokenValid(token: string, ignoreExpr: boolean = false) {
+    jwt.verify(token, this.SECRETE, { ignoreEpiration: ignoreExpr });
   }
 
-  public static validateUser(user: UserDTO) {
-    const findUser = knex("user")
-    .where({
-      id: user.id,
-      email: user.email
-    }).then((users)=>{
-      return users[0];
-    }).catch(err=> null)
+  public static async validateUser(user: UserDTO) {
+    const findUser = await knex("users").select()
+      .where("id", user.id)
+      .where("email", user.email)
+      .then((users) => {
+        return users[0];
+      })
+      .catch((err) => null);
 
-    if(!findUser)
-      throw new Error("invalid user credentials");
+    if (!findUser) throw new Error("invalid user credentials");
   }
 
   public static getUser(token: string) {

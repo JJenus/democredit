@@ -12,22 +12,23 @@ app.use("/wallets", requireLogin, walletController);
 
 app.use("/", authController)
 
-function requireLogin(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function requireLogin(req: express.Request, res: express.Response, next: express.NextFunction) {
   const authToken = req.headers.authorization;
   if(!authToken){
     return res.status(401).send({message: "Authorization headers not found"})
   }
-  const token = authToken.split(" ")[1];
+ 
   try {
+    const token = authToken.split(" ")[1];
     //check if token is valid: throws error if not valid
     JWT.isTokenValid(token);
-    JWT.validateUser(JWT.getUser(token))
+    await JWT.validateUser(JWT.getUser(token))
+    next()
   } catch (error) {
     return res.status(401).send({
       message: error.message,
     });
   }
-  next()
 }
 const port = process.env.PORT || 4000;
 

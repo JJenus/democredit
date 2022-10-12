@@ -114,13 +114,15 @@ auth.post("/token/refresh", async (req: Request, res: Response) => {
 
   try {
     //check if token is valid: throws error if not valid
-    JWT.isTokenValid(body.token);
+    JWT.isTokenValid(body.token, true);
     //check if token is valid: throws error if not valid
     await JWT.isRefreshTokenValid(body.refreshToken, JWT.getJwtId(body.token));
   } catch (error) {
-    return res.status(401).send({
-      message: error.message,
-    });
+    if (error.message !== "jwt expired") {
+      return res.status(401).send({
+        message: error.message,
+      });
+    }
   }
 
   const userDTO: UserDTO = JWT.getUser(body.token);
