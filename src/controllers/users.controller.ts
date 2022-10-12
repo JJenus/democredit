@@ -43,7 +43,13 @@ users.get("/:id/wallet", async (req: Request, res: Response) => {
     .select()
     .where("user_id", id)
     .then((wallets: any) => {
-      return wallets[0];
+      let wallet: Wallet = {
+        userId: wallets[0].user_id,
+        balance: wallets[0].balance / 100,
+        currencyCode: wallets[0].currency_code,
+        updatedAt: wallets[0].updated_at,
+      };
+      return wallet;
     })
     .catch((err) => {
       console.log(err);

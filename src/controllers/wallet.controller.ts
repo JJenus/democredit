@@ -88,7 +88,7 @@ wallets.post("/withdraw", async (req: Request, res: Response) => {
     });
 
   if (wallet.balance < amount) {
-    return res.status(400).send({
+    return res.status(422).send({
       message: "insufficient balance",
     });
   }
@@ -175,7 +175,7 @@ wallets.post("/transfer", async (req: Request, res: Response) => {
     });
 
   if (wallet.balance < amount) {
-    return res.status(400).send({
+    return res.status(422).send({
       message: "insufficient balance",
     });
   }

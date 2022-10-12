@@ -25,7 +25,7 @@ auth.post("/register", async (req: Request, res: Response) => {
   const existingUser = await findUserByEmail(body.email);
   console.log(existingUser);
   if (existingUser) {
-    return res.status(400).json({
+    return res.status(409).json({
       message: "email already exists",
     });
   }
