@@ -43,8 +43,10 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "NODE_ENV=development ts-node-dev src/index.ts",
-    "migrate": "knex migrate:latest --knexfile src/database/knexfile.ts",
-    "rollback": "knex migrate:rollback --knexfile src/database/knexfile.ts",
+    "migrate:production": "NODE_ENV=production knex migrate:latest --knexfile src/database/knexfile.ts",
+    "rollback:production": "NODE_ENV=production knex migrate:rollback --knexfile src/database/knexfile.ts",
+    "migrate:dev": "knex migrate:latest --knexfile src/database/knexfile.ts",
+    "rollback:dev": "knex migrate:rollback --knexfile src/database/knexfile.ts",
     "seed": "knex seed:run --knexfile src/database/knexfile.js"
   }
 }
