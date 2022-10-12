@@ -6,5 +6,5 @@ export interface TransferTransactionDTO {
   currencyCode: string;
   status: string;
   transactionId: string;
-  createdAt: string
+  createdAt: string;
 }
