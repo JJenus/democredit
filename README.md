@@ -1,12 +1,4 @@
 
-# Demo Credit Wallet
-
-A simple and secure API for Demo Credit Wallet
-## Postman Documentation
-
-[https://documenter.getpostman.com/view/14571079/2s83znpMCT](https://documenter.getpostman.com/view/14571079/2s83znpMCT)
-
-
 ## Setup
 
 clone or download repo
@@ -17,7 +9,7 @@ clone or download repo
 ```
 ### Database
 Entity relation diagram
-![image](https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg)
+![democredit_db](https://user-images.githubusercontent.com/74376773/195471155-f6f9e101-ad54-431e-a1dc-a7fe4141008e.png)
 
 Setup database tables
 ```bash
