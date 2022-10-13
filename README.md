@@ -1,4 +1,12 @@
 
+# Demo Credit Wallet API
+
+A simple and secure API for Demo Credit Wallet
+## Postman Documentation
+
+[https://documenter.getpostman.com/view/14571079/2s83znpMCT](https://documenter.getpostman.com/view/14571079/2s83znpMCT)
+
+
 ## Setup
 
 clone or download repo
