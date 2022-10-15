@@ -42,18 +42,6 @@ export class JWT {
     jwt.verify(token, this.SECRETE, { ignoreEpiration: ignoreExpr });
   }
 
-  public static async validateUser(user: UserDTO) {
-    const findUser = await knex("users").select()
-      .where("id", user.id)
-      .where("email", user.email)
-      .then((users) => {
-        return users[0];
-      })
-      .catch((err) => null);
-
-    if (!findUser) throw new Error("invalid user credentials");
-  }
-
   public static getUser(token: string) {
     const decodedToken = jwt.decode(token);
     const user: UserDTO = {
